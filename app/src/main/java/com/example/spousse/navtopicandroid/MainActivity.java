@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static int LOAD_IMAGE_RESULTS = 1;
 
     // GUI components
-    private Button button;	// The button
+    private Button buttonUpload;	// The button
     private Button buttonGoTo; // THe Goto Button
     private TextView textView; // The textview
     private ImageView image;// ImageView
@@ -45,16 +45,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         // Find references to the GUI objects
-        button = (Button)findViewById(R.id.button);
-        buttonGoTo = (Button)findViewById(R.id.button2);
+        buttonUpload = (Button)findViewById(R.id.buttonUpload);
+        buttonGoTo = (Button)findViewById(R.id.buttonGoTo);
         textView = (TextView)findViewById(R.id.textView);
         image = (ImageView)findViewById(R.id.image);
 
-        //hide the button GoTo
+        // Hide the button GoTo
         buttonGoTo.setVisibility(View.INVISIBLE);
 
         // Set button's onClick listener object.
-        button.setOnClickListener(this);
+        buttonUpload.setOnClickListener(this);
         buttonGoTo.setOnClickListener(this);
     }
 
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         switch (v.getId()){
-            case  R.id.button : //clic sur le bouton upload
+            case  R.id.buttonUpload : //clic on the upload button
 
                 // Create the Intent for Image Gallery.
                 Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
 
-            case R.id.button2 : //clic sur le bouton "y aller"
+            case R.id.buttonGoTo : //clic on the Go to button
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                         Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=latitude,longitude"));
                 startActivity(intent);
