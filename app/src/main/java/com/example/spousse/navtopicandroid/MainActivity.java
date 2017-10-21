@@ -135,7 +135,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.buttonGoTo : //clic on the Go to button
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                        Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=latitude,longitude"));
+                        //saddr = source, daddr = destination
+                        Uri.parse("http://maps.google.com/maps?saddr=&daddr=latitude,longitude"));
                 startActivity(intent);
                 break;
         }
