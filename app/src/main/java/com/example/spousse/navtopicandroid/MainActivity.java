@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -28,16 +27,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView textView; // The textview
     private ImageView image;// ImageView
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    // Coordinates
+    String slatitude = "48.122846";
+    String slongitude = "-1.770979";
+    String dlatitude = "48.122846";
+    String dlongitude = "-1.770979";
 
-    // Méthode pour vérifier la permission d'écriture sur le téléphone
-    public boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
-    }
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,9 +87,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // Now we need to set the GUI ImageView data with data read from the picked file.
             image.setImageBitmap(BitmapFactory.decodeFile(imagePath));
 
-            String latitude = "48.122846";
-            String longitude = "-1.770979";
-
 
             if(hasCoordinates) {
                 //longitude = String.valueOf(latLong[0]);
@@ -101,10 +94,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 //longitude = latitude = "None";
             }
-            textView.setText("Largeur de l'image : " + exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH) + "\n" +
-                    "Poids de l'image : " + exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH) + "\n" +
-                    "Date image : " + exif.getAttribute(ExifInterface.TAG_DATETIME) + "\n" +
-                    "Coordonnée GPS : " + longitude + "," + latitude + "\n" +
+            textView.setText("Width : " + exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH) + "px \n" +
+                    "Size : " + exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH) + "\n" +
+                    "Date : " + exif.getAttribute(ExifInterface.TAG_DATETIME) + "\n" +
+                    "Latitude : " + dlatitude + "\n" +
+                    "Longitude : " + dlongitude + "\n" +
                     "Orientation : " + exif.getAttribute(ExifInterface.TAG_ORIENTATION) + "\n"
             );
 
@@ -136,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.buttonGoTo : //clic on the Go to button
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                         //saddr = source, daddr = destination
-                        Uri.parse("http://maps.google.com/maps?saddr=&daddr=latitude,longitude"));
+                        Uri.parse("http://maps.google.com/maps?saddr=" + slatitude + "," + slongitude + "&daddr=" + dlatitude + "," + dlongitude ));
                 startActivity(intent);
                 break;
         }
