@@ -1,8 +1,12 @@
 package com.example.spousse.navtopicandroid;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
-
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -28,12 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView image;// ImageView
 
     // Coordinates
-    String slatitude = "48.122846";
-    String slongitude = "-1.770979";
-    String dlatitude = "48.122846";
-    String dlongitude = "-1.770979";
-
-    private static final String TAG = MainActivity.class.getSimpleName();
+    Double slatitude, slongitude, dlatitude, dlongitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +39,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         // Find references to the GUI objects
-        buttonUpload = (Button)findViewById(R.id.buttonUpload);
-        buttonGoTo = (Button)findViewById(R.id.buttonGoTo);
-        textView = (TextView)findViewById(R.id.textView);
-        image = (ImageView)findViewById(R.id.image);
+        buttonUpload = (Button) findViewById(R.id.buttonUpload);
+        buttonGoTo = (Button) findViewById(R.id.buttonGoTo);
+        textView = (TextView) findViewById(R.id.textView);
+        image = (ImageView) findViewById(R.id.image);
 
         // Hide the button GoTo
         buttonGoTo.setVisibility(View.INVISIBLE);
@@ -52,7 +50,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set button's onClick listener object.
         buttonUpload.setOnClickListener(this);
         buttonGoTo.setOnClickListener(this);
+
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationListener ll = new myLocationListener();
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
     }
+        class myLocationListener implements LocationListener {
+
+            @Override
+            public void onLocationChanged(Location location) {
+                slatitude = location.getLatitude();
+                slongitude = location.getLongitude();
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+
+        }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -73,10 +100,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
 
             // recupération des meta de la photo
-            float[] latLong = null;
             boolean hasCoordinates = true; // TODO: 20/10/2017 Remettre à false
             ExifInterface exif = null;
-
 
             try {
                 exif = new ExifInterface(imagePath);
@@ -97,16 +122,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             textView.setText("Width : " + exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH) + "px \n" +
                     "Size : " + exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH) + "\n" +
                     "Date : " + exif.getAttribute(ExifInterface.TAG_DATETIME) + "\n" +
-                    "Latitude : " + dlatitude + "\n" +
-                    "Longitude : " + dlongitude + "\n" +
+                    "Latitude : " + slatitude + "\n" +
+                    "Longitude : " + slongitude + "\n" +
                     "Orientation : " + exif.getAttribute(ExifInterface.TAG_ORIENTATION) + "\n"
             );
 
             // Display button to navigate to the place
             if(hasCoordinates) {
                 buttonGoTo.setVisibility(View.VISIBLE);
-
-
             }
             // At the end remember to close the cursor or you will end with the RuntimeException!
             cursor.close();
